@@ -1,0 +1,19 @@
+{
+  "name": "grafkom-hollow-object",
+  "version": "1.0.0",
+  "description": "Tubes 2 grafkom",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "snowpack dev",
+    "build": "snowpack build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.informatika.org:girvinjunod/webgl-hollow-object.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "snowpack": "^3.8.8"
+  }
+}
