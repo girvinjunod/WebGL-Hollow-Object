@@ -7,13 +7,13 @@ export default class Mat3x3 {
             0, 1, 0,
             0, 0, 1
         ])
-        this.translate(tx, ty);
-        this.rotate(r);
-        this.scale(sx, sy);
+        this.translate(tx, ty)
+        this.rotate(r)
+        this.scale(sx, sy)
     }
 
     get matrix() {
-        return this._matrix;
+        return this._matrix
     }
 
     translate(tx , ty) {
@@ -22,7 +22,7 @@ export default class Mat3x3 {
             0, 1, 0,
             tx, ty, 1
         ])
-        this._matrix = mat.mmult(this._matrix);
+        this._matrix = mat.mmult(this._matrix)
     }
 
     rotate(r) {
@@ -33,7 +33,7 @@ export default class Mat3x3 {
             sin, cos, 0,
             0, 0, 1
         ])
-        this._matrix = mat.mmult(this._matrix);
+        this._matrix = mat.mmult(this._matrix)
     }
 
     scale(sx, sy) {
@@ -42,6 +42,6 @@ export default class Mat3x3 {
             0, sy, 0,
             0, 0, 1
         ])
-        this._matrix = mat.mmult(this._matrix);
+        this._matrix = mat.mmult(this._matrix)
     }
 }
