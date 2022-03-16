@@ -35,6 +35,20 @@ const resizeCanvas = (gl) => {
 const canvas = document.querySelector('#glCanvas')
 const gl = canvas.getContext('webgl2')
 
+const rxSlider = document.getElementById('rotate-rx')
+const rySlider = document.getElementById('rotate-rz')
+const rzSlider = document.getElementById('rotate-ry')
+
+const sxSlider = document.getElementById('scale-sx')
+const sySlider = document.getElementById('scale-sy')
+const szSlider = document.getElementById('scale-sz')
+
+const txSlider = document.getElementById('translate-tx')
+const tySlider = document.getElementById('translate-ty')
+const tzSlider = document.getElementById('translate-tz')
+
+
+
 function get_cube_coordinates(){
   let bblock = [
       [0, 0, 0],
@@ -77,7 +91,16 @@ function get_cube_coordinates(){
       temp[i][0] = -temp[i][1] + 0.5
       temp[i][1] = cur + 0.5
   }
-  bblock = bblock.concat(temp)
+  let temp2 = JSON.parse(JSON.stringify(bblock));
+  for (let i=0;i<temp2.length;i++){
+      temp2[i][1] = temp2[i][1] - 0.5;
+      temp2[i][2] = temp2[i][2] - 0.5;
+      let cur = temp2[i][1];
+      temp2[i][1] = -temp2[i][2] + 0.5;
+      temp2[i][2] = cur + 0.5;
+  }
+  bblock = bblock.concat(temp);
+  bblock = bblock.concat(temp2);
 
   return bblock
 }
@@ -121,7 +144,8 @@ window.onload = function() {
     glObject.setPoints(cube_coor)
     glObject.setTopology(cube_topo, cube_col)
 
-    glObject.setTransform(0, 0, 0, 0, 0, 0, 1, 1, 1)
+    // glObject.setTransform(0, 0, 0, 0, 0, 0, 1, 1, 1)
+    glObject.setTransform(0, 0, 0, parseInt(rxSlider.value), parseInt(rySlider.value), parseInt(rzSlider.value), 1, 1, 1)
     renderer.addObject(glObject);
   
     function render() {
@@ -133,6 +157,24 @@ window.onload = function() {
     }
   
     requestAnimationFrame(render)
+    let updateTransform = () => {
+      glObject.setTransform(
+          parseFloat(txSlider.value), parseFloat(tySlider.value), -parseFloat(tzSlider.value),
+          parseFloat(rxSlider.value), parseFloat(rySlider.value), parseFloat(rzSlider.value),
+          parseFloat(sxSlider.value), parseFloat(sySlider.value), parseFloat(szSlider.value))
+    }
+
+    txSlider.oninput = updateTransform
+    tySlider.oninput = updateTransform
+    tzSlider.oninput = updateTransform
+    rxSlider.oninput = updateTransform
+    rySlider.oninput = updateTransform
+    rzSlider.oninput = updateTransform
+    sxSlider.oninput = updateTransform
+    sySlider.oninput = updateTransform
+    szSlider.oninput = updateTransform
+
+
   }
 
   main()

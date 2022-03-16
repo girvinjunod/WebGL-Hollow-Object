@@ -53,7 +53,6 @@ export default class GLObject3D {
         sx, sy, sz,
     ) {
         this.transform = new Mat4x4(tx, ty, tz, rx, ry, rz, sx, sy, sz);
-        // console.log(this.transform.matrix);
     }
 
     getPolygonVertexForBinding(vert){
