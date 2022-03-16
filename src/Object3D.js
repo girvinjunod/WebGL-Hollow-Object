@@ -3,48 +3,48 @@ import Mat4x4 from './utils/mat4x4'
 export default class GLObject3D {
     // shader
     // gl
-    // pts
-    // col
+    // points
+    // color
     // topo
     // transform
 
-    // va
-    // ca
+    // vertexArray
+    // colorArray
 
     constructor(shader, gl) {
         this.shader = shader
         this.gl = gl
-        this.col = [1.0, 1.0, 1.0, 1.0]
+        this.color = [1.0, 1.0, 1.0, 1.0]
     }
 
-    setPoints(pts) {
-        let maxmin = [[pts[0][0], pts[0][0]], [pts[0][1], pts[0][1]], [pts[0][2], pts[0][2]]];
-        let len = pts.length
+    setPoints(points) {
+        let maxmin = [[points[0][0], points[0][0]], [points[0][1], points[0][1]], [points[0][2], points[0][2]]];
+        let len = points.length
         for (let i=0;i<len;i++){
             for (let j=0;j<3;j++){
-                maxmin[j][0] = Math.max(maxmin[j][0], pts[i][j])
-                maxmin[j][1] = Math.min(maxmin[j][1], pts[i][j])
+                maxmin[j][0] = Math.max(maxmin[j][0], points[i][j])
+                maxmin[j][1] = Math.min(maxmin[j][1], points[i][j])
             }
         }
         let ctr = [0, 0, 0];
         for (let i=0;i<3;i++){
-            ctr[i] = (maxmin[i][0] - maxmin[i][1]) / 2
+            ctr[i] = (maxmin[i][0] + maxmin[i][1]) / 2
         }
         for (let i=0;i<len;i++){
             for (let j=0;j<3;j++){
-                pts[i][j] -= ctr[j]
+                points[i][j] -= ctr[j]
             }
         }
-        this.pts = pts
+        this.points = points
     }
 
-    setColorArray(col) {
-        this.col = col
+    setColorArray(color) {
+        this.color = color
     }
 
-    setTopology(topo, col) {
+    setTopology(topo, color) {
         this.topo = topo
-        this.col = col
+        this.color = color
     }
 
     setTransform(
@@ -56,89 +56,89 @@ export default class GLObject3D {
     }
 
     getPolygonVertexForBinding(vert){
-        let res = [];
-        if (vert.length >= 3){
-            let ctr = vert[0];
+        let res = []
+        if (vert.length > 3){
+            let ctr = vert[0]
             let sisa = vert.slice(1, vert.length);
-            let len = sisa.length;
-            for (let i=0;i<len;i++){
+            let len = sisa.length
+            for (let i=0;i<len-1;i++){
                 for (let j=0;j<3;j++){
-                    res.push(ctr[j]);
+                    res.push(ctr[j])
                 }
                 for (let j=0;j<3;j++){
-                    res.push(sisa[i][j]);
+                    res.push(sisa[i][j])
                 }
                 for (let j=0;j<3;j++){
-                    res.push(sisa[(i + 1) % len][j]);
+                    res.push(sisa[(i + 1) % len][j])
                 }
             }
         } else{
             let len = vert.length;
             for (let i=0;i<len;i++){
                 for (let j=0;j<3;j++){
-                    res.push(vert[i][j]);
+                    res.push(vert[i][j])
                 }
             }
         }
-        return res;
+        return res
     }
 
-    getColorDuplicates(currcol, n){
+    getColorDuplicates(currcolor, n){
         let res = [];
         for (let i=0;i<n;i++){
-            for (let j of currcol){
-                res.push(j);
+            for (let j of currcolor){
+                res.push(j)
             }
         }
-        return res;
+        return res
     }
 
     draw(projection) {
-        const gl = this.gl;
+        const gl = this.gl
 
-        gl.useProgram(this.shader);
+        gl.useProgram(this.shader)
         
-        const a_position = gl.getAttribLocation(this.shader, 'a_pos');
-        const a_color = gl.getAttribLocation(this.shader, 'a_color');
+        const a_position = gl.getAttribLocation(this.shader, 'a_pos')
+        const a_color = gl.getAttribLocation(this.shader, 'a_color')
 
-        const u_matrix = gl.getUniformLocation(this.shader, 'u_matrix');
-        const u_projection = gl.getUniformLocation(this.shader, 'u_projection');
+        const u_matrix = gl.getUniformLocation(this.shader, 'u_matrix')
+        const u_projection = gl.getUniformLocation(this.shader, 'u_projection')
 
-        gl.uniformMatrix4fv(u_matrix, false, this.transform.matrix.data);
-        gl.uniformMatrix4fv(u_projection, false, projection.data);
+        gl.uniformMatrix4fv(u_matrix, false, this.transform.matrix.data)
+        gl.uniformMatrix4fv(u_projection, false, projection.data)
 
-        gl.enableVertexAttribArray(a_position);
+        gl.enableVertexAttribArray(a_position)
 
-        let va = [];
-        let ca = [];
-        let topolen = this.topo.length;
+        let vertexArray = []
+        let colorArray = []
+        let topolen = this.topo.length
         for (let i=0;i<topolen;i++){
-            let polygon_pts = [];
+            let polygon_points = []
             for (let j of this.topo[i]){
-                polygon_pts.push(this.pts[j])
+                polygon_points.push(this.points[j])
             }
-            let temp1 = this.getPolygonVertexForBinding(polygon_pts);
+            let temp1 = this.getPolygonVertexForBinding(polygon_points)
             for (let x of temp1){
-                va.push(x);
+                vertexArray.push(x);
             }
-            let temp2 = this.getColorDuplicates(this.col[i], temp1.length);
+            let temp2 = this.getColorDuplicates(this.color[i], temp1.length/3)
             for (let x of temp2){
-                ca.push(x);
+                colorArray.push(x);
             }
         }
         const posBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(va), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexArray), gl.STATIC_DRAW);
         gl.enableVertexAttribArray(a_position);
         gl.vertexAttribPointer(a_position, 3, gl.FLOAT, false, 0, 0);
         
-        const colBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, colBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(ca), gl.STATIC_DRAW);
+        const colorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colorArray), gl.STATIC_DRAW);
         gl.enableVertexAttribArray(a_color);
         gl.vertexAttribPointer(a_color, 4, gl.FLOAT, false, 0, 0);
 
-        let len = va.length;
+        let len = vertexArray.length;
         for (let i=0;i<len - 2;i+=3){
             gl.drawArrays(gl.TRIANGLES, i, 3);
         }

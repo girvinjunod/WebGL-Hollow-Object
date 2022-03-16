@@ -131,18 +131,18 @@ window.onload = function() {
     // glObject.setTopology([[0, 1, 2, 3]], [[1.0, 0.0, 0.0, 1.0]]);
     let cube_coor = get_cube_coordinates()
     let cube_topo = []
-    let cube_col = []
+    let cube_color = []
     for (let i=0;i<cube_coor.length;i+=4){
         let temp = []
         for (let pl=0;pl<4;pl++){
             temp.push(i + pl)
         }
         cube_topo.push(temp);
-        cube_col.push([1, 0, 0, 1])
+        cube_color.push([0, 0, 0, 1])
     }
 
     glObject.setPoints(cube_coor)
-    glObject.setTopology(cube_topo, cube_col)
+    glObject.setTopology(cube_topo, cube_color)
 
     // glObject.setTransform(0, 0, 0, 0, 0, 0, 1, 1, 1)
     glObject.setTransform(0, 0, 0, parseInt(rxSlider.value), parseInt(rySlider.value), parseInt(rzSlider.value), 1, 1, 1)

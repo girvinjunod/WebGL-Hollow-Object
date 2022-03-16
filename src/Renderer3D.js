@@ -17,7 +17,7 @@ export default class Renderer3D {
         this.count = 0
         this._projection = 0
         this._orthoSize = [2, 2, 2]
-        this._camPosition = [0, 0, 0]
+        this._camPosition = 2
         this.updateCameraProjection()
     }
 
