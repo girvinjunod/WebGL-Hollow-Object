@@ -1,4 +1,4 @@
-import Mat4x4 from './utils/mat4x4'
+import {Mat4x4} from './utils/matrix'
 
 export default class GLObject3D {
     // shader

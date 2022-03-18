@@ -2,28 +2,6 @@ import { initShaderFiles } from './utils/shader';
 import GLObject3D from './Object3D';
 import Renderer3D from './Renderer3D';
 
-
-const colors = [
-  [ 0.0, 0.0, 0.0, 1.0 ],  // black
-  [ 1.0, 0.0, 0.0, 1.0 ],  // red
-  [ 1.0, 1.0, 0.0, 1.0 ],  // yellow
-  [ 0.0, 1.0, 0.0, 1.0 ],  // green
-  [ 0.0, 0.0, 1.0, 1.0 ],  // blue
-  [ 1.0, 0.0, 1.0, 1.0 ],  // magenta
-  [ 0.0, 1.0, 1.0, 1.0 ]   // cyan
-];
-
-const Tool = {
-  "DRAW" : 0,
-  "MOVE" : 1
-}
-
-const Shape = {
-  "LINE" : 0,
-  "SQUARE" : 1,
-  "POLYGON" : 2
-}
-
 let projectionIdx = 0
 let objects = []
 

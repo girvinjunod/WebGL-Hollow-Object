@@ -1,4 +1,4 @@
-import Matrix from './utils/matrix';
+import {Matrix} from './utils/matrix';
 
 
 export default class Renderer3D {

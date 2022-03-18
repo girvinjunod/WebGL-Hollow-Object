@@ -14,7 +14,7 @@ export const loadShader = async (gl, type, source) => {
 
 
 export async function getShader(source) {
-    const shader = await fetch('/shaders/' + source).then(res => res.text())
+    const shader = await fetch('scripts/shaders/' + source).then(res => res.text())
     return shader
 }
 
