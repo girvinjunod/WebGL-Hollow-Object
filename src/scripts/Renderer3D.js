@@ -1,4 +1,4 @@
-import {Matrix} from './utils/matrix';
+import {Matrix, Mat4x4} from './utils/matrix';
 
 
 export default class Renderer3D {
@@ -18,6 +18,7 @@ export default class Renderer3D {
         this._projection = 0
         this._orthoSize = [2, 2, 2]
         this._camPosition = 2
+        this._camRotation = 0
         this.updateCameraProjection()
     }
 
@@ -40,10 +41,20 @@ export default class Renderer3D {
         this.updateCameraProjection()
     }
 
+    get camRotation() {
+      return this._camRotation
+    }
+
+    set camRotation(pos) {
+        this._camRotation = pos
+        this.updateCameraProjection()
+    }
+
 
     updateCameraProjection() {
+      var cameraRotationMatrix = new Mat4x4(0,0,0,0,this._camRotation,0,1,1,1);
         if (this._projection == Renderer3D.ORTHOGRAPHIC) {
-            this._projectionMat = new Matrix(4, 4, [
+            let m = new Matrix(4, 4, [
                 2 / this._orthoSize[0], 0, 0, 0,
                 0, 2 / this._orthoSize[1], 0, 0,
                 0, 0, 2 / this._orthoSize[2], 0,
@@ -52,6 +63,7 @@ export default class Renderer3D {
                 -2 * this._camPosition[2] / this._orthoSize[2], 
                 1,
             ])
+            this._projectionMat = m.mmult(cameraRotationMatrix.matrix)
         }
     }
 

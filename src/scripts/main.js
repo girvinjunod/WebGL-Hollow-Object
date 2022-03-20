@@ -25,6 +25,8 @@ const txSlider = document.getElementById('translate-tx')
 const tySlider = document.getElementById('translate-ty')
 const tzSlider = document.getElementById('translate-tz')
 
+const cameraRotate = document.getElementById('rotate-camera')
+const cameraRadius = document.getElementById('radius-camera')
 
 
 function get_cube_coordinates(){
@@ -152,6 +154,12 @@ window.onload = function() {
     sySlider.oninput = updateTransform
     szSlider.oninput = updateTransform
 
+    cameraRotate.oninput = function (){
+      renderer.camRotation = parseInt(cameraRotate.value); 
+    }
+    cameraRadius.oninput = function (){
+      renderer.camPosition = parseInt(cameraRadius.value); 
+    }
 
   }
 
