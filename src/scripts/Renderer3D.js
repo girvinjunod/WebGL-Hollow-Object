@@ -54,7 +54,25 @@ export default class Renderer3D {
         this._orthoSize = size
         this.updateCameraProjection()
     }
+    
+    get nearClipDist() {
+        return this._nearClipDist
+    }
 
+    set nearClipDist(dist) {
+        this._nearClipDist = dist
+        this.updateCameraProjection()
+    }
+
+    get farClipDist() {
+        return this._farClipDist
+    }
+
+    set farClipDist(dist) {
+        this._farClipDist = dist
+        this.updateCameraProjection()
+    }
+    
     get camPosition() {
         return this._camPosition
     }
