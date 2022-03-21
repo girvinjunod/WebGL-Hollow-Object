@@ -71,7 +71,7 @@
       </div>
       <div class="container-sidebar">
         <h2>WebGL Hollow Object</h2>
-        <div class="options">
+        <div class="options" style="margin-top: -10px;">
             <div class="options-projection">
               <label class="options-label">Projection</label>
               <select id="projection-selector">
@@ -79,6 +79,12 @@
                 <option value="1">Orthographic</option>
                 <option value="2">Oblique</option>
               </select>
+              <div class="options-sliders-container" style="margin-bottom: -30px;">
+                <div class="options-sliders">
+                  <label for="fov">FOV: </label>
+                  <input type="range" min="0" max="180" value="70" id="fov" name="fov" />
+                </div>
+              </div>
             </div>
           <label class="options-label">Translation Slider</label>
           <div class="options-sliders-container">
@@ -158,7 +164,7 @@
                 </div>
           </div>
 
-          <div>
+          <div style="margin-top: -20px;">
             <p>Load File :</p>
             <input
               class="form-control form-control-sm"
@@ -169,7 +175,7 @@
           </div>
         </div>
 
-        <div id="help-btn">Help</div>
+        <div id="help-btn" style="margin-top: -20px;">Help</div>
         <div id="default-btn">Set to Default</div>
       </div>
     </div>
