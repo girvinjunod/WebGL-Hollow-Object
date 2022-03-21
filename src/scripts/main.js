@@ -32,6 +32,7 @@ const tzSlider = document.getElementById('translate-tz')
 
 const cameraRotate = document.getElementById('rotate-camera')
 const cameraRadius = document.getElementById('radius-camera')
+const cameraFOV = document.getElementById('camera-fov')
 
 
 function get_cube_coordinates(){
@@ -168,6 +169,9 @@ window.onload = function() {
     cameraRadius.oninput = function (){
       renderer.camPosition = parseInt(cameraRadius.value); 
     }
+    cameraFOV.oninput = function (){
+      renderer.camFOV = parseInt(cameraFOV.value); 
+    }
 
   }
 
@@ -197,7 +201,9 @@ window.onload = function() {
       szSlider.value = 1
       cameraRotate.value = 0
       cameraRadius.value = 2
+      cameraFOV.value = 70
     // SET CAMERA
+      renderer.camFOV = 70;
       renderer.orthoSize = [2, 2, 2];
       renderer.camPosition = [0, 0, 0];
       renderer.camRotation = 0;
