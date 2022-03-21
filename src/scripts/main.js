@@ -25,9 +25,10 @@ const txSlider = document.getElementById('translate-tx')
 const tySlider = document.getElementById('translate-ty')
 const tzSlider = document.getElementById('translate-tz')
 
+const projectionSelector = document.getElementById('projection-selector')
+
 const cameraRotate = document.getElementById('rotate-camera')
 const cameraRadius = document.getElementById('radius-camera')
-
 
 function get_cube_coordinates(){
   let bblock = [
@@ -101,7 +102,7 @@ window.onload = function() {
     gl.viewport(0,0, gl.canvas.width, gl.canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   
-    const renderer = new Renderer3D()
+    const renderer = new Renderer3D(gl)
     renderer.orthoSize = [2, 2, 2];
     renderer.camPosition = [0, 0, 0];
   
@@ -153,6 +154,10 @@ window.onload = function() {
     sxSlider.oninput = updateTransform
     sySlider.oninput = updateTransform
     szSlider.oninput = updateTransform
+
+    projectionSelector.onchange = function() {
+      renderer.projection = parseInt(projectionSelector.value);
+    }
 
     cameraRotate.oninput = function (){
       renderer.camRotation = parseInt(cameraRotate.value); 
