@@ -12,6 +12,11 @@ const resizeCanvas = (gl) => {
 
 const canvas = document.querySelector('#glCanvas')
 const gl = canvas.getContext('webgl2')
+const renderer = new Renderer3D()
+
+var shaderProgram;
+var shaderProgram3D;
+var glObject;
 
 const rxSlider = document.getElementById('rotate-rx')
 const rySlider = document.getElementById('rotate-rz')
@@ -27,6 +32,7 @@ const tzSlider = document.getElementById('translate-tz')
 
 const cameraRotate = document.getElementById('rotate-camera')
 const cameraRadius = document.getElementById('radius-camera')
+const cameraFOV = document.getElementById('camera-fov')
 
 
 function get_cube_coordinates(){
@@ -86,7 +92,12 @@ function get_cube_coordinates(){
 }
 
 window.onload = function() {
+
+  
   async function main() {
+    shaderProgram = await initShaderFiles(gl, 'vert2d.glsl', 'frag.glsl')
+    shaderProgram3D = await initShaderFiles(gl, 'vert3d.glsl', 'frag.glsl')
+    glObject = new GLObject3D(shaderProgram3D, gl);
     if (gl === null) {
       alert(
         'Unable to initialize WebGL. Your browser or machine may not support it.'
@@ -95,17 +106,15 @@ window.onload = function() {
     }
     resizeCanvas(gl)
     window.addEventListener('resize', () => resizeCanvas(gl), false)
-    const shaderProgram = await initShaderFiles(gl, 'vert2d.glsl', 'frag.glsl')
-    const shaderProgram3D = await initShaderFiles(gl, 'vert3d.glsl', 'frag.glsl')
+
   
     gl.viewport(0,0, gl.canvas.width, gl.canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   
-    const renderer = new Renderer3D()
+    // const renderer = new Renderer3D()
     renderer.orthoSize = [2, 2, 2];
     renderer.camPosition = [0, 0, 0];
   
-    const glObject = new GLObject3D(shaderProgram3D, gl);
     // glObject.setPoints([[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]]);
     // glObject.setColorArray([[1.0, 0.0, 0.0, 1.0]]);
     // glObject.setTopology([[0, 1, 2, 3]], [[1.0, 0.0, 0.0, 1.0]]);
@@ -160,16 +169,13 @@ window.onload = function() {
     cameraRadius.oninput = function (){
       renderer.camPosition = parseInt(cameraRadius.value); 
     }
+    cameraFOV.oninput = function (){
+      renderer.camFOV = parseInt(cameraFOV.value); 
+    }
 
   }
 
   main()
-
-
-
-
-
-
 
   let projectionSelector = document.getElementById('projection-selector')
   projectionSelector.addEventListener('change', (e) => {
@@ -183,7 +189,28 @@ window.onload = function() {
 
   let defaultButton = document.getElementById('default-btn')
   defaultButton.addEventListener('click', () => {
-    //reset to default
+    //  SET ALL INPUT TO DEFAULT
+      rxSlider.value = 0
+      rySlider.value = 0
+      rzSlider.value = 0
+      txSlider.value = 0
+      tySlider.value = 0
+      tzSlider.value = 0
+      sxSlider.value = 1
+      sySlider.value = 1
+      szSlider.value = 1
+      cameraRotate.value = 0
+      cameraRadius.value = 2
+      cameraFOV.value = 70
+    // SET CAMERA
+      renderer.camFOV = 70;
+      renderer.orthoSize = [2, 2, 2];
+      renderer.camPosition = [0, 0, 0];
+      renderer.camRotation = 0;
+      glObject.setTransform(
+        parseFloat(0), parseFloat(0), -parseFloat(0),
+        parseFloat(0), parseFloat(0), parseFloat(0),
+        parseFloat(1), parseFloat(1), parseFloat(1))
   })
 
   

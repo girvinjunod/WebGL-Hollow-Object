@@ -19,6 +19,7 @@ export default class Renderer3D {
         this._orthoSize = [2, 2, 2]
         this._camPosition = 2
         this._camRotation = 0
+        this._camFOV = 70
         this.updateCameraProjection()
     }
 
@@ -47,6 +48,15 @@ export default class Renderer3D {
 
     set camRotation(pos) {
         this._camRotation = pos
+        this.updateCameraProjection()
+    }
+
+    get camFOV() {
+      return this._camFOV
+    }
+
+    set camFOV(pos) {
+        this._camFOV = pos
         this.updateCameraProjection()
     }
 
