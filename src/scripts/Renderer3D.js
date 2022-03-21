@@ -36,7 +36,16 @@ export default class Renderer3D {
         this._projection = type
         this.updateCameraProjection()
     }
+    
+    get fov() {
+        return this._fov
+    }
 
+    set fov(pos) {
+        this._fov = pos
+        this.updateCameraProjection()
+    }
+    
     get orthoSize() {
         return this._orthoSize
     }

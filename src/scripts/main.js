@@ -26,6 +26,7 @@ const tySlider = document.getElementById('translate-ty')
 const tzSlider = document.getElementById('translate-tz')
 
 const projectionSelector = document.getElementById('projection-selector')
+const fov = document.getElementById('fov')
 
 const cameraRotate = document.getElementById('rotate-camera')
 const cameraRadius = document.getElementById('radius-camera')
@@ -159,6 +160,9 @@ window.onload = function() {
       renderer.projection = parseInt(projectionSelector.value);
     }
 
+    fov.oninput = function (){
+      renderer.fov = parseInt(fov.value); 
+    }
     cameraRotate.oninput = function (){
       renderer.camRotation = parseInt(cameraRotate.value); 
     }
