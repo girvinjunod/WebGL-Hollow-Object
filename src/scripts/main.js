@@ -12,11 +12,12 @@ const resizeCanvas = (gl) => {
 
 const canvas = document.querySelector('#glCanvas')
 const gl = canvas.getContext('webgl2')
-const renderer = new Renderer3D()
+const renderer = new Renderer3D(gl)
 
 var shaderProgram;
 var shaderProgram3D;
 var glObject;
+var shadeToggle = true;
 
 const rxSlider = document.getElementById('rotate-rx')
 const rySlider = document.getElementById('rotate-rz')
@@ -33,6 +34,19 @@ const tzSlider = document.getElementById('translate-tz')
 const cameraRotate = document.getElementById('rotate-camera')
 const cameraRadius = document.getElementById('radius-camera')
 const cameraFOV = document.getElementById('camera-fov')
+
+let shadingRadio = document.getElementsByName('shade');
+for (var i = 0; i < shadingRadio.length; i++) {
+  shadingRadio[i].addEventListener('change', function (e) {
+    if (e.target.id== "on") {
+      shadeToggle = true
+      glObject.shadeToggle = true
+    } else{
+      shadeToggle = false
+      glObject.shadeToggle = false
+    }
+  })
+}
 
 
 function get_cube_coordinates(){
@@ -87,15 +101,20 @@ function get_cube_coordinates(){
   }
   bblock = bblock.concat(temp);
   bblock = bblock.concat(temp2);
-
+  
   return bblock
 }
 
+let updateTransform = () => {
+  glObject.setTransform(
+      parseFloat(txSlider.value), parseFloat(tySlider.value), -parseFloat(tzSlider.value),
+      parseFloat(rxSlider.value), parseFloat(rySlider.value), parseFloat(rzSlider.value),
+      parseFloat(sxSlider.value), parseFloat(sySlider.value), parseFloat(szSlider.value))
+}
 window.onload = function() {
 
   
   async function main() {
-    shaderProgram = await initShaderFiles(gl, 'vert2d.glsl', 'frag.glsl')
     shaderProgram3D = await initShaderFiles(gl, 'vert3d.glsl', 'frag.glsl')
     glObject = new GLObject3D(shaderProgram3D, gl);
     if (gl === null) {
@@ -111,13 +130,9 @@ window.onload = function() {
     gl.viewport(0,0, gl.canvas.width, gl.canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   
-    // const renderer = new Renderer3D()
     renderer.orthoSize = [2, 2, 2];
     renderer.camPosition = [0, 0, 0];
   
-    // glObject.setPoints([[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]]);
-    // glObject.setColorArray([[1.0, 0.0, 0.0, 1.0]]);
-    // glObject.setTopology([[0, 1, 2, 3]], [[1.0, 0.0, 0.0, 1.0]]);
     let cube_coor = get_cube_coordinates()
     let cube_topo = []
     let cube_color = []
@@ -127,14 +142,15 @@ window.onload = function() {
             temp.push(i + pl)
         }
         cube_topo.push(temp);
-        cube_color.push([0, 0, 0, 1])
+        cube_color.push([1, 0, 0, 1])
     }
 
     glObject.setPoints(cube_coor)
     glObject.setTopology(cube_topo, cube_color)
 
-    // glObject.setTransform(0, 0, 0, 0, 0, 0, 1, 1, 1)
-    glObject.setTransform(0, 0, 0, parseInt(rxSlider.value), parseInt(rySlider.value), parseInt(rzSlider.value), 1, 1, 1)
+    glObject.generateNormalsFromTopology()
+
+    updateTransform()
     renderer.addObject(glObject);
   
     function render() {
@@ -146,12 +162,6 @@ window.onload = function() {
     }
   
     requestAnimationFrame(render)
-    let updateTransform = () => {
-      glObject.setTransform(
-          parseFloat(txSlider.value), parseFloat(tySlider.value), -parseFloat(tzSlider.value),
-          parseFloat(rxSlider.value), parseFloat(rySlider.value), parseFloat(rzSlider.value),
-          parseFloat(sxSlider.value), parseFloat(sySlider.value), parseFloat(szSlider.value))
-    }
 
     txSlider.oninput = updateTransform
     tySlider.oninput = updateTransform

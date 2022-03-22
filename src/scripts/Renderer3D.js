@@ -1,9 +1,10 @@
 import {Matrix, Mat4x4} from './utils/matrix';
+import Vector from './utils/vector';
 
 
 export default class Renderer3D {
     static ORTHOGRAPHIC = 0
-
+    // gl
     // objectList: Array<GL3DObject>
     // count: number
     
@@ -11,17 +12,24 @@ export default class Renderer3D {
     // _camPosition: number[]
     // _projection: number
     // _projectionMat: Matrix
+    // _nearClipDist: number;
+    // _farClipDist: number;
     
-    constructor() {
+    constructor(gl) {
+        this.gl = gl
         this.objectList = new Array()
         this.count = 0
         this._projection = 0
         this._orthoSize = [2, 2, 2]
         this._camPosition = 2
         this._camRotation = 0
+        this._nearClipDist = 0.1
+        this._farClipDist = 2000
         this._camFOV = 70
         this.updateCameraProjection()
     }
+
+
 
 
     get orthoSize() {
@@ -60,6 +68,22 @@ export default class Renderer3D {
         this.updateCameraProjection()
     }
 
+    get nearClipDistance() { 
+        return this._nearClipDist
+    }
+    set nearClipDistance(near) { 
+        this._nearClipDist = near
+        this.updateCameraProjection()
+    }
+    
+    get farClipDistance() { 
+        return this._farClipDist
+    }
+    set farClipDistance(far) { 
+        this._farClipDist = far
+        this.updateCameraProjection()
+    }
+
 
     updateCameraProjection() {
       var cameraRotationMatrix = new Mat4x4(0,0,0,0,this._camRotation,0,1,1,1);
@@ -92,8 +116,12 @@ export default class Renderer3D {
 
 
     render() {
+        let gl = this.gl;
+        gl.clearColor(1,1,1,1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.enable(gl.DEPTH_TEST);
         for (let obj of this.objectList) {
-            obj.draw(this._projectionMat)
+            obj.draw(this._projectionMat, new Vector([0.5, 0.7, 1]).normalized.data, 0.8);
         }
     }
 }
