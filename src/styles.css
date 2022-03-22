@@ -105,6 +105,16 @@ body {
     transition: 0.3s;
     cursor: pointer;
   }
+
+  #load-btn {
+    width: 100px;
+    text-align: center;
+    background-color:cadetblue;
+    padding: 10px 0;
+    border-radius: 10px;
+    transition: 0.3s;
+    cursor: pointer;
+  }
   
   #default-btn:hover {
     background-color: rgb(236, 236, 236);

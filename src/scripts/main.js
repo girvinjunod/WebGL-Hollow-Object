@@ -242,11 +242,21 @@ span.onclick = function () {
 
 
 // Load File
-const loadFile = (e) => {
-  const file = e.target.files[0]
-  var reader = new FileReader()
-  reader.addEventListener('load', function (e) {
-    //do something
-  })
-  reader.readAsBinaryString(file)
+var loadButton = document.getElementById('load-btn')
+loadButton.onclick = function () {
+  var file = document.getElementById('load')
+  if (!file.files.length) {
+    loadFile()
+  }
+}
+const loadFile = () => {
+  var reader = new FileReader();
+  reader.addEventListener('load', function() {
+    var content = this.result
+    var hollow = JSON.parse(content);
+    console.log(hollow)
+    glObject.setPoints(hollow.coor);
+    glObject.setTopology(hollow.topo, hollow.color);
+  });
+  reader.readAsText(document.getElementById('load').files[0]);
 }
