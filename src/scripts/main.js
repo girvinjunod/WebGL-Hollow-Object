@@ -8,6 +8,7 @@ let objects = []
 const resizeCanvas = (gl) => {
   gl.canvas.width = (1 / 2) * window.innerWidth
   gl.canvas.height = window.innerHeight
+  console.log(window.innerHeight/2)
 }
 
 const canvas = document.querySelector('#glCanvas')
@@ -115,7 +116,7 @@ window.onload = function() {
 
   
   async function main() {
-    shaderProgram3D = await initShaderFiles(gl, 'vert3d.glsl', 'frag.glsl')
+    shaderProgram3D = await initShaderFiles(gl, 'vert.glsl', 'frag.glsl')
     glObject = new GLObject3D(shaderProgram3D, gl);
     if (gl === null) {
       alert(
@@ -239,14 +240,23 @@ span.onclick = function () {
   modal.style.display = 'none'
 }
 
-
-
 // Load File
 const loadFile = (e) => {
   const file = e.target.files[0]
   var reader = new FileReader()
   reader.addEventListener('load', function (e) {
-    //do something
+    let data = e.target.result
+    data = JSON.parse(data)
+    console.log(data)
+    glObject.setPoints(data.coor)
+    if (data.nv !== undefined) {
+      glObject.setNormalData(data.nv)
+    }
+    if (data.normBind === undefined) {
+        glObject.setTopology(data.topo, data.color)
+    } else {
+        glObject.setTopology(data.topo, data.color, data.normBind)
+    }
   })
   reader.readAsBinaryString(file)
 }
