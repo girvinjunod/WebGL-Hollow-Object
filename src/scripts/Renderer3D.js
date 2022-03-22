@@ -93,21 +93,21 @@ export default class Renderer3D {
 
 
     updateCameraProjection() {
-        var viewMatrix;
+        var viewMatrix = new Matrix();
         var webGl = this.webGl
         var cameraRotationMatrix = new Mat4x4(0,0,0,0,this._camRotation,0,1,1,1);
         cameraRotationMatrix.translate(0,0, this._camPosition);
         viewMatrix = cameraRotationMatrix.matrix.inverse();
 
         if (this._projection == Renderer3D.ORTHOGRAPHIC) {
+            let inverseX = 1 / this._orthoSize[0];
+            let inverseY = 1 / this._orthoSize[1];
+            let inverseZ = 1 / this._orthoSize[2];
             let m = new Matrix(4, 4, [
-                2 / this._orthoSize[0], 0, 0, 0,
-                0, 2 / this._orthoSize[1], 0, 0,
-                0, 0, 2 / this._orthoSize[2], 0,
-                -2 * this._camPosition[0] / this._orthoSize[0], 
-                -2 * this._camPosition[1] / this._orthoSize[1], 
-                -2 * this._camPosition[2] / this._orthoSize[2], 
-                1,
+                2 * inverseX, 0, 0, 0,
+                0, 2 * inverseY, 0, 0,
+                0, 0, -2 * inverseZ, 0,
+                0, 0, 0, 1
             ])
             this._projectionMat = viewMatrix.mmult(m);
         }
@@ -170,6 +170,13 @@ export default class Renderer3D {
 
 
     render() {
+        var webGl = this.webGl
+
+        webGl.clearColor(1,1,1,1);
+        webGl.clear(webGl.COLOR_BUFFER_BIT);
+
+        webGl.enable(webGl.DEPTH_TEST);
+
         for (let obj of this.objectList) {
             obj.draw(this._projectionMat)
         }

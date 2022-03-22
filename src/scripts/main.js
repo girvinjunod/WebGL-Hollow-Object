@@ -104,7 +104,7 @@ window.onload = function() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   
     const renderer = new Renderer3D(gl)
-    renderer.orthoSize = [2, 2, 2];
+    renderer.orthoSize = [2, 2, 200];
     renderer.camPosition = [0, 0, 0];
   
     const glObject = new GLObject3D(shaderProgram3D, gl);
