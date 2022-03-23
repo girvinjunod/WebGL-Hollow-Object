@@ -264,13 +264,6 @@ span.onclick = function () {
 
 
 // Load File
-var loadButton = document.getElementById('load-btn')
-loadButton.onclick = function () {
-  var file = document.getElementById('load')
-  if (!file.files.length) {
-    loadFile()
-  }
-}
 const loadFile = () => {
   var reader = new FileReader();
   reader.addEventListener('load', function() {
