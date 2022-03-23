@@ -25,7 +25,7 @@ export default class Renderer3D {
         this._orthoSize = [2, 2, 2]
         this._nearClipDist = 0.1
         this._farClipDist = 2000
-        this._camFOV = 153
+        this._camFOV = 70
         this._camPosition = 2
         this._camRotation = 0
         this._nearClipDist = 0.1
@@ -117,8 +117,14 @@ export default class Renderer3D {
         var viewMatrix = new Matrix();
         var webGl = this.webGl
         var cameraRotationMatrix = new Mat4x4(0,0,0,0,this._camRotation,0,1,1,1);
-        // cameraRotationMatrix.translate(0,0, this._camPosition);
-        viewMatrix = cameraRotationMatrix.matrix.inverse();
+        if (!(this._projection == Renderer3D.ORTHOGRAPHIC)){
+          cameraRotationMatrix.translate(0,0, this._camPosition);
+        }
+        if ((this._projection == Renderer3D.PERSPECTIVE)){
+          viewMatrix = cameraRotationMatrix.matrix.inverse();
+        } else {
+          viewMatrix = cameraRotationMatrix.matrix
+        }
 
         if (this._projection == Renderer3D.ORTHOGRAPHIC) {
             let inverseX = 1 / this._orthoSize[0];

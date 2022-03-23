@@ -178,6 +178,14 @@ window.onload = function() {
     projectionSelector.onchange = function() {
       renderer.projection = parseInt(projectionSelector.value);
       renderer.camFOV = parseInt(cameraFOV.value); 
+      if (renderer.projection == 1){
+        cameraRadius.value = 0;
+        renderer.camPosition = 0;
+      }
+      else if (renderer.projection == 2){
+        cameraRadius.value = 2;
+        renderer.camPosition = 2;
+      }
     }
 
     cameraRotate.oninput = function (){
@@ -217,12 +225,19 @@ window.onload = function() {
       sySlider.value = 1
       szSlider.value = 1
       cameraRotate.value = 0
-      cameraRadius.value = 2
+      if (renderer.projection == 1){
+        cameraRadius.value = 0;
+        renderer.camPosition = 0;
+      }
+      else {
+        cameraRadius.value = 2;
+        renderer.camPosition = 2;
+      }
       cameraFOV.value = 70
     // SET CAMERA
       renderer.camFOV = 70;
       renderer.orthoSize = [2, 2, 2];
-      renderer.camPosition = [0, 0, 0];
+      // renderer.camPosition = [0, 0, 0];
       renderer.camRotation = 0;
       glObject.setTransform(
         parseFloat(0), parseFloat(0), -parseFloat(0),
@@ -249,13 +264,6 @@ span.onclick = function () {
 
 
 // Load File
-var loadButton = document.getElementById('load-btn')
-loadButton.onclick = function () {
-  var file = document.getElementById('load')
-  if (!file.files.length) {
-    loadFile()
-  }
-}
 const loadFile = () => {
   var reader = new FileReader();
   reader.addEventListener('load', function() {
