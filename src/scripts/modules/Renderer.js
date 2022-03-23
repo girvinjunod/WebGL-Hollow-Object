@@ -111,7 +111,7 @@ export default class Renderer {
             this._projectionMat = viewMatrix.mmult(m);
         }
         else if (this._projection == Renderer.PERSPECTIVE) {
-            var fov = 70
+            var fov = 55
             var nearClip = this._nearClipDist;
             var farClip = this._farClipDist;
 
