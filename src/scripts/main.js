@@ -158,6 +158,7 @@ window.onload = function() {
 
     projectionSelector.onchange = function() {
       renderer.projection = parseInt(projectionSelector.value);
+      renderer.fov = parseInt(fov.value); 
     }
 
     fov.oninput = function (){
