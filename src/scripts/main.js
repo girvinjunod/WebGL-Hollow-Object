@@ -1,9 +1,8 @@
 import { initShaderFiles } from './utils/shader';
-import GLObject3D from './Object3D';
-import Renderer3D from './Renderer3D';
+import GLObject from './GLObject';
+import Renderer from './Renderer';
 
 let projectionIdx = 0
-let objects = []
 
 const resizeCanvas = (gl) => {
   gl.canvas.width = (1 / 2) * window.innerWidth
@@ -12,12 +11,10 @@ const resizeCanvas = (gl) => {
 
 const canvas = document.querySelector('#glCanvas')
 const gl = canvas.getContext('webgl2')
-const renderer = new Renderer3D(gl)
+const renderer = new Renderer(gl)
 
-var shaderProgram;
-var shaderProgram3D;
-var glObject;
-var shadeToggle = true;
+let shaderProgram
+let glObject
 
 const rxSlider = document.getElementById('rotate-rx')
 const rySlider = document.getElementById('rotate-rz')
@@ -37,14 +34,17 @@ const cameraRotate = document.getElementById('rotate-camera')
 const cameraRadius = document.getElementById('radius-camera')
 const cameraFOV = document.getElementById('camera-fov')
 
+let loadButton = document.getElementById('load')
+let defaultButton = document.getElementById('default-btn')
+
 let shadingRadio = document.getElementsByName('shade');
 for (var i = 0; i < shadingRadio.length; i++) {
   shadingRadio[i].addEventListener('change', function (e) {
     if (e.target.id== "on") {
-      shadeToggle = true
+      // shadeToggle = true
       glObject.shadeToggle = true
     } else{
-      shadeToggle = false
+      // shadeToggle = false
       glObject.shadeToggle = false
     }
   })
@@ -116,8 +116,8 @@ window.onload = function() {
 
   
   async function main() {
-    shaderProgram3D = await initShaderFiles(gl, 'vertexShader.glsl', 'fragmentShader.glsl')
-    glObject = new GLObject3D(shaderProgram3D, gl);
+    shaderProgram = await initShaderFiles(gl, 'vertexShader.glsl', 'fragmentShader.glsl')
+    glObject = new GLObject(shaderProgram, gl);
     if (gl === null) {
       alert(
         'Unable to initialize WebGL. Your browser or machine may not support it.'
@@ -131,7 +131,7 @@ window.onload = function() {
     gl.viewport(0,0, gl.canvas.width, gl.canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   
-    const renderer = new Renderer3D(gl)
+    const renderer = new Renderer(gl)
     renderer.orthoSize = [2, 2, 200];
     renderer.camPosition = [0, 0, 0];
   
@@ -202,19 +202,17 @@ window.onload = function() {
 
   main()
 
-  let projectionSelector = document.getElementById('projection-selector')
   projectionSelector.addEventListener('change', (e) => {
     projectionIdx = e.target.value
     console.log(`Selected projection: ${projectionIdx}`)
   })
 
 
-  let loadButton = document.getElementById('load')
+  
   loadButton.addEventListener('change', loadFile)
 
-  let defaultButton = document.getElementById('default-btn')
+ 
   defaultButton.addEventListener('click', () => {
-    //  SET ALL INPUT TO DEFAULT
       rxSlider.value = 0
       rySlider.value = 0
       rzSlider.value = 0
@@ -227,16 +225,15 @@ window.onload = function() {
       cameraRotate.value = 0
       if (renderer.projection == 1){
         cameraRadius.value = 0;
-        renderer.camPosition = 0;
+        renderer.camPosition = 0
       }
       else {
         cameraRadius.value = 2;
         renderer.camPosition = 2;
       }
       cameraFOV.value = 70
-    // SET CAMERA
       renderer.camFOV = 70;
-      renderer.orthoSize = [2, 2, 2];
+      renderer.orthoSize = [2, 2, 200]
       // renderer.camPosition = [0, 0, 0];
       renderer.camRotation = 0;
       glObject.setTransform(
@@ -270,11 +267,14 @@ const loadFile = () => {
     var content = this.result
     var hollow = JSON.parse(content);
     glObject.setPoints(hollow.coor);
-    if (hollow.vn !== undefined) glObject.setNormalData(hollow.vn);
-    if (hollow.normBind === undefined) {
+    if (hollow.vn !== undefined){
+      glObject.setNormalData(hollow.vn);
+    } 
+      
+    if (hollow.vn_idx === undefined) {
       glObject.setTopology(hollow.topo, hollow.color);
   } else {
-      glObject.setTopology(hollow.topo, hollow.color, hollow.normBind);
+      glObject.setTopology(hollow.topo, hollow.color, hollow.vn_idx);
   }
     // glObject.setTopology(hollow.topo, hollow.color);
   });

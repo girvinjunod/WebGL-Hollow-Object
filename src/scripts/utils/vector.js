@@ -1,6 +1,4 @@
 export default class Vector {
-    // data : number[];
-
     constructor(data) {
         this.data = data;
     }
@@ -13,14 +11,30 @@ export default class Vector {
         this.data[i] = x;
     }
 
-    get x() { return this.data[0]; }
-    set x(val) { this.data[0] = val; }
-    get y() { return this.data[1]; }
-    set y(val) { this.data[1] = val; }
-    get z() { return this.data[2]; }
-    set z(val) { this.data[2] = val; }
-    get w() { return this.data[3]; }
-    set w(val) { this.data[3] = val; }
+    get x(){
+         return this.data[0]
+    }
+    set x(val) {
+        this.data[0] = val
+    }
+    get y() {
+        return this.data[1]
+    }
+    set y(val) {
+        this.data[1] = val
+    }
+    get z() {
+        return this.data[2]
+    }
+    set z(val) {
+        this.data[2] = val
+    }
+    get w() {
+        return this.data[3]
+    }
+    set w(val) {
+        this.data[3] = val
+    }
 
     get magnitude() {
         let res = 0;
@@ -82,7 +96,9 @@ export default class Vector {
     }
 
     add(v){
-        if (this.data.length !== v.data.length) return undefined;
+        if (this.data.length !== v.data.length){
+            return undefined;
+        } 
 
         let res = new Vector([]);
 
@@ -95,15 +111,17 @@ export default class Vector {
     }
 
     sub(v){
-        if (this.data.length !== v.data.length) return undefined;
-
-        let res = new Vector([]);
-
-        for (let i = 0; i < this.data.length; i++) {
-            let val = this.data[i] - v.data[i];
-            res.data.push(val);
+        if (this.data.length !== v.data.length){
+            return undefined;
         }
 
-        return res;
+        let res = new Vector([])
+
+        for (let i = 0; i < this.data.length; i++) {
+            let val = this.data[i] - v.data[i]
+            res.data.push(val)
+        }
+
+        return res
     }
 }

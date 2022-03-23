@@ -2,20 +2,10 @@ import {Matrix, Mat4x4} from './utils/matrix';
 import Vector from './utils/vector';
 
 
-export default class Renderer3D {
+export default class Renderer {
     static ORTHOGRAPHIC = 0
     static OBLIQUE = 1
     static PERSPECTIVE = 2
-
-    // objectList: Array<GL3DObject>
-    // count: number
-    
-    // _orthoSize: number[]
-    // _camPosition: number[]
-    // _projection: number
-    // _projectionMat: Matrix
-    // _nearClipDist: number;
-    // _farClipDist: number;
     
     constructor(webGl) {
         this.webGl = webGl
@@ -117,16 +107,16 @@ export default class Renderer3D {
         var viewMatrix = new Matrix();
         var webGl = this.webGl
         var cameraRotationMatrix = new Mat4x4(0,0,0,0,this._camRotation,0,1,1,1);
-        if (!(this._projection == Renderer3D.ORTHOGRAPHIC)){
+        if (!(this._projection == Renderer.ORTHOGRAPHIC)){
           cameraRotationMatrix.translate(0,0, this._camPosition);
         }
-        if ((this._projection == Renderer3D.PERSPECTIVE)){
+        if ((this._projection == Renderer.PERSPECTIVE)){
           viewMatrix = cameraRotationMatrix.matrix.inverse();
         } else {
           viewMatrix = cameraRotationMatrix.matrix
         }
 
-        if (this._projection == Renderer3D.ORTHOGRAPHIC) {
+        if (this._projection == Renderer.ORTHOGRAPHIC) {
             var inverseX = 1 / this._orthoSize[0];
             var inverseY = 1 / this._orthoSize[1];
             var inverseZ = 1 / this._orthoSize[2];
@@ -138,7 +128,7 @@ export default class Renderer3D {
             ])
             this._projectionMat = viewMatrix.mmult(m);
         }
-        else if (this._projection == Renderer3D.PERSPECTIVE) {
+        else if (this._projection == Renderer.PERSPECTIVE) {
             var fov = this._camFOV;
             var nearClip = this._nearClipDist;
             var farClip = this._farClipDist;
@@ -155,7 +145,7 @@ export default class Renderer3D {
             ]);
             this._projectionMat = viewMatrix.mmult(m);
         }
-        else if (this._projection == Renderer3D.OBLIQUE) {
+        else if (this._projection == Renderer.OBLIQUE) {
             var inverseX = 1 / this._orthoSize[0];
             var inverseY = 1 / this._orthoSize[1];
             var inverseZ = 1 / this._orthoSize[2];
@@ -205,7 +195,7 @@ export default class Renderer3D {
         webGl.enable(webGl.DEPTH_TEST);
 
         for (let obj of this.objectList) {
-            obj.draw(this._projectionMat, new Vector([0.5, 0.7, 1]).normalized.data, 0.8);
+            obj.draw(this._projectionMat, new Vector([0.5, 0.7, 1]).normalized.data, 0.6);
         }
     }
 }

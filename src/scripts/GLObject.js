@@ -1,21 +1,7 @@
 import {Mat4x4} from './utils/matrix'
 import Vector from './utils/vector'
 
-export default class GLObject3D {
-    // shader
-    // gl
-    // points
-    // color
-    // topo
-    // transform
-    // _shadeToggle: boolean;
-    // vertexArray
-    // colorArray
-    // nv : number[][]; // Array of normals (normalized vectors)
-    // na : number[]; // Array of normals to be written to the buffer
-    // normBind : number[][]; // Binding normals to polygon topology data
-
-
+export default class GLObject {
     constructor(shader, gl) {
         this.shader = shader
         this.gl = gl
@@ -54,11 +40,6 @@ export default class GLObject3D {
     setNormalData(nv) {
         this.nv = nv;
     }
-
-
-    // setColorArray(color) {
-    //     this.color = color
-    // }
 
     setTopology(topo, color, normBind) {
         this.topo = topo
@@ -155,7 +136,7 @@ export default class GLObject3D {
 
         const a_normal = gl.getAttribLocation(this.shader, 'a_normal')
 
-        const u_matrix = gl.getUniformLocation(this.shader, 'u_world')
+        const u_world = gl.getUniformLocation(this.shader, 'u_world')
 
         const u_projection = gl.getUniformLocation(this.shader, 'u_worldProjection')
 
@@ -165,7 +146,7 @@ export default class GLObject3D {
         const shadeToggle = gl.getUniformLocation(this.shader, "shadeToggle");
 
 
-        gl.uniformMatrix4fv(u_matrix, false, this.transform.matrix.data)
+        gl.uniformMatrix4fv(u_world, false, this.transform.matrix.data)
         gl.uniformMatrix4fv(u_projection, false, projection.data)
         gl.uniform1f(u_ambLight, ambientLight)
         gl.uniform3fv(u_revLightDir, lightDir)
@@ -175,8 +156,6 @@ export default class GLObject3D {
             gl.uniform1i(shadeToggle, 0)
         }
         
-
-
         gl.enableVertexAttribArray(a_position)
 
         let vertexArray = []
@@ -203,6 +182,7 @@ export default class GLObject3D {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colorArray), gl.STATIC_DRAW);
         gl.enableVertexAttribArray(a_color)
         gl.vertexAttribPointer(a_color, 4, gl.FLOAT, false, 0, 0)
+
         const normBuffer = gl.createBuffer()
         gl.bindBuffer(gl.ARRAY_BUFFER, normBuffer)
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.na), gl.STATIC_DRAW)
