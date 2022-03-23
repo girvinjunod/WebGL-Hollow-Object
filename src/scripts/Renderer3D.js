@@ -3,8 +3,8 @@ import {Matrix, Mat4x4} from './utils/matrix';
 
 export default class Renderer3D {
     static ORTHOGRAPHIC = 0
-    static PERSPECTIVE = 1
-    static OBLIQUE = 2
+    static OBLIQUE = 1
+    static PERSPECTIVE = 2
 
     // objectList: Array<GL3DObject>
     // count: number
@@ -96,7 +96,7 @@ export default class Renderer3D {
         var viewMatrix = new Matrix();
         var webGl = this.webGl
         var cameraRotationMatrix = new Mat4x4(0,0,0,0,this._camRotation,0,1,1,1);
-        cameraRotationMatrix.translate(0,0, this._camPosition);
+        // cameraRotationMatrix.translate(0,0, this._camPosition);
         viewMatrix = cameraRotationMatrix.matrix.inverse();
 
         if (this._projection == Renderer3D.ORTHOGRAPHIC) {
