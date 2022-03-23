@@ -1,5 +1,5 @@
-import {Matrix, Mat4x4} from './utils/matrix';
-import Vector from './utils/vector';
+import {Matrix, Mat4x4} from '../utils/matrix';
+import Vector from '../utils/vector';
 
 
 export default class Renderer {
@@ -15,13 +15,12 @@ export default class Renderer {
         this._orthoSize = [2, 2, 2]
         this._nearClipDist = 0.1
         this._farClipDist = 2000
-        this._camFOV = 70
         this._camPosition = 2
         this._camRotation = 0
         this._nearClipDist = 0.1
         this._farClipDist = 2000
 
-        this._Ka = 0.8
+        this._Ka = 0.5
         this.updateCameraProjection()
     }
 
@@ -87,15 +86,6 @@ export default class Renderer {
         this.updateCameraProjection()
     }
 
-    get camFOV() {
-      return this._camFOV
-    }
-
-    set camFOV(pos) {
-        this._camFOV = pos
-        this.updateCameraProjection()
-    }
-
     get nearClipDistance() { 
         return this._nearClipDist
     }
@@ -139,7 +129,7 @@ export default class Renderer {
             this._projectionMat = viewMatrix.mmult(m);
         }
         else if (this._projection == Renderer.PERSPECTIVE) {
-            var fov = this._camFOV;
+            var fov = 70
             var nearClip = this._nearClipDist;
             var farClip = this._farClipDist;
 

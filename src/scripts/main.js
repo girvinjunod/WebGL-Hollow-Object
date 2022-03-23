@@ -1,6 +1,6 @@
 import { initShaderFiles } from './utils/shader';
-import GLObject from './GLObject';
-import Renderer from './Renderer';
+import GLObject from './modules/GLObject';
+import Renderer from './modules/Renderer';
 
 let projectionIdx = 0
 
@@ -35,7 +35,6 @@ const projectionSelector = document.getElementById('projection-selector')
 
 const cameraRotate = document.getElementById('rotate-camera')
 const cameraRadius = document.getElementById('radius-camera')
-const cameraFOV = document.getElementById('camera-fov')
 
 let loadButton = document.getElementById('load')
 let defaultButton = document.getElementById('default-btn')
@@ -126,7 +125,6 @@ window.onload = function() {
 
     projectionSelector.onchange = function() {
       renderer.projection = parseInt(projectionSelector.value);
-      renderer.camFOV = parseInt(cameraFOV.value); 
       if (renderer.projection == 1){
         cameraRadius.value = 0;
         renderer.camPosition = 0;
@@ -142,9 +140,6 @@ window.onload = function() {
     }
     cameraRadius.oninput = function (){
       renderer.camPosition = parseInt(cameraRadius.value); 
-    }
-    cameraFOV.oninput = function (){
-      renderer.camFOV = parseInt(cameraFOV.value); 
     }
 
   }
@@ -180,8 +175,6 @@ window.onload = function() {
         cameraRadius.value = 2;
         renderer.camPosition = 2;
       }
-      cameraFOV.value = 70
-      renderer.camFOV = 70;
       renderer.orthoSize = [2, 2, 200]
       // renderer.camPosition = [0, 0, 0];
       renderer.camRotation = 0;

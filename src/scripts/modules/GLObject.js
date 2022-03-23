@@ -1,5 +1,5 @@
-import {Mat4x4} from './utils/matrix'
-import Vector from './utils/vector'
+import {Mat4x4} from '../utils/matrix'
+import Vector from '../utils/vector'
 
 export default class GLObject {
     constructor(shader, gl) {
@@ -78,6 +78,7 @@ export default class GLObject {
         return res
     }
 
+    //buat segitiga aja bisanya
     generateNormalsFromTopology() {
         this.nv = [];
         this.normBind = [];
