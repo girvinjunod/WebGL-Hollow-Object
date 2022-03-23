@@ -32,7 +32,7 @@ const tySlider = document.getElementById('translate-ty')
 const tzSlider = document.getElementById('translate-tz')
 
 const projectionSelector = document.getElementById('projection-selector')
-const fov = document.getElementById('fov')
+// const fov = document.getElementById('fov')
 
 const cameraRotate = document.getElementById('rotate-camera')
 const cameraRadius = document.getElementById('radius-camera')
@@ -178,12 +178,20 @@ window.onload = function() {
 
     projectionSelector.onchange = function() {
       renderer.projection = parseInt(projectionSelector.value);
-      renderer.fov = parseInt(fov.value); 
+      renderer.camFOV = parseInt(cameraFOV.value); 
+      if (renderer.projection == 1){
+        cameraRadius.value = 0;
+        renderer.camPosition = 0;
+      }
+      else if (renderer.projection == 2){
+        cameraRadius.value = 2;
+        renderer.camPosition = 2;
+      }
     }
 
-    fov.oninput = function (){
-      renderer.fov = parseInt(fov.value); 
-    }
+    // fov.oninput = function (){
+    //   renderer.fov = parseInt(fov.value); 
+    // }
     cameraRotate.oninput = function (){
       renderer.camRotation = parseInt(cameraRotate.value); 
     }
@@ -221,12 +229,19 @@ window.onload = function() {
       sySlider.value = 1
       szSlider.value = 1
       cameraRotate.value = 0
-      cameraRadius.value = 2
+      if (renderer.projection == 1){
+        cameraRadius.value = 0;
+        renderer.camPosition = 0;
+      }
+      else {
+        cameraRadius.value = 2;
+        renderer.camPosition = 2;
+      }
       cameraFOV.value = 70
     // SET CAMERA
       renderer.camFOV = 70;
       renderer.orthoSize = [2, 2, 2];
-      renderer.camPosition = [0, 0, 0];
+      // renderer.camPosition = [0, 0, 0];
       renderer.camRotation = 0;
       glObject.setTransform(
         parseFloat(0), parseFloat(0), -parseFloat(0),

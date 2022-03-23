@@ -25,7 +25,7 @@ export default class Renderer3D {
         this._orthoSize = [2, 2, 2]
         this._nearClipDist = 0.1
         this._farClipDist = 2000
-        this._fov = 180
+        // this._fov = 180
         this._camPosition = 2
         this._camRotation = 0
         this._nearClipDist = 0.1
@@ -43,15 +43,15 @@ export default class Renderer3D {
         this.updateCameraProjection()
     }
     
-    get fov() {
-        return this._fov
-    }
+    // get fov() {
+    //     return this._fov
+    // }
 
-    set fov(pos) {
-        this._fov = pos
-        console.log(pos)
-        this.updateCameraProjection()
-    }
+    // set fov(pos) {
+    //     this._fov = pos
+    //     console.log(pos)
+    //     this.updateCameraProjection()
+    // }
     
     get orthoSize() {
         return this._orthoSize
@@ -125,12 +125,18 @@ export default class Renderer3D {
 
 
     updateCameraProjection() {
-        console.log(this._fov)
+        console.log(this.camFOV)
         var viewMatrix = new Matrix();
         var webGl = this.webGl
         var cameraRotationMatrix = new Mat4x4(0,0,0,0,this._camRotation,0,1,1,1);
-        // cameraRotationMatrix.translate(0,0, this._camPosition);
-        viewMatrix = cameraRotationMatrix.matrix.inverse();
+        if (!(this._projection == Renderer3D.ORTHOGRAPHIC)){
+          cameraRotationMatrix.translate(0,0, this._camPosition);
+        }
+        if ((this._projection == Renderer3D.PERSPECTIVE)){
+          viewMatrix = cameraRotationMatrix.matrix.inverse();
+        } else {
+          viewMatrix = cameraRotationMatrix.matrix
+        }
 
         if (this._projection == Renderer3D.ORTHOGRAPHIC) {
             let inverseX = 1 / this._orthoSize[0];
@@ -145,7 +151,7 @@ export default class Renderer3D {
             this._projectionMat = viewMatrix.mmult(m);
         }
         else if (this._projection == Renderer3D.PERSPECTIVE) {
-            var fov = this._fov;
+            var fov = this._camFOV;
             var nearClip = this._nearClipDist;
             var farClip = this._farClipDist;
 
