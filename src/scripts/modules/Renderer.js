@@ -12,7 +12,7 @@ export default class Renderer {
         this.objectList = new Array()
         this.count = 0
         this._projection = 0
-        this._orthoSize = [2, 2, 2]
+        this._orthoSize = [2, 2, 1999.9]
         this._nearClipDist = 0.1
         this._farClipDist = 2000
         this._camPosition = 2
@@ -81,22 +81,6 @@ export default class Renderer {
 
     set camRotation(pos) {
         this._camRotation = pos
-        this.updateCameraProjection()
-    }
-
-    get nearClipDistance() { 
-        return this._nearClipDist
-    }
-    set nearClipDistance(near) { 
-        this._nearClipDist = near
-        this.updateCameraProjection()
-    }
-    
-    get farClipDistance() { 
-        return this._farClipDist
-    }
-    set farClipDistance(far) { 
-        this._farClipDist = far
         this.updateCameraProjection()
     }
 

@@ -78,7 +78,7 @@ window.onload = function() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   
     const renderer = new Renderer(gl)
-    renderer.orthoSize = [2, 2, 2];
+    renderer.orthoSize = [2, 2, 1999.9];
     renderer.camPosition = [0, 0, 0];
 
     await fetch('./hollow-objs/hypercube.json').then(response => {
@@ -175,7 +175,7 @@ window.onload = function() {
         cameraRadius.value = 2;
         renderer.camPosition = 2;
       }
-      renderer.orthoSize = [2, 2, 2]
+      renderer.orthoSize = [2, 2, 1999.9]
       // renderer.camPosition = [0, 0, 0];
       renderer.camRotation = 0;
       glObject.setTransform(
