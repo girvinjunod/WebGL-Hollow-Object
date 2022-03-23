@@ -25,12 +25,11 @@ export default class Renderer3D {
         this._orthoSize = [2, 2, 2]
         this._nearClipDist = 0.1
         this._farClipDist = 2000
-        this._fov = 180
+        this._camFOV = 153
         this._camPosition = 2
         this._camRotation = 0
         this._nearClipDist = 0.1
         this._farClipDist = 2000
-        this._camFOV = 70
         this.updateCameraProjection()
     }
 
@@ -40,16 +39,6 @@ export default class Renderer3D {
 
     set projection(type) {
         this._projection = type
-        this.updateCameraProjection()
-    }
-    
-    get fov() {
-        return this._fov
-    }
-
-    set fov(pos) {
-        this._fov = pos
-        console.log(pos)
         this.updateCameraProjection()
     }
     
@@ -125,7 +114,6 @@ export default class Renderer3D {
 
 
     updateCameraProjection() {
-        console.log(this._fov)
         var viewMatrix = new Matrix();
         var webGl = this.webGl
         var cameraRotationMatrix = new Mat4x4(0,0,0,0,this._camRotation,0,1,1,1);
@@ -145,7 +133,7 @@ export default class Renderer3D {
             this._projectionMat = viewMatrix.mmult(m);
         }
         else if (this._projection == Renderer3D.PERSPECTIVE) {
-            var fov = this._fov;
+            var fov = this._camFOV;
             var nearClip = this._nearClipDist;
             var farClip = this._farClipDist;
 
