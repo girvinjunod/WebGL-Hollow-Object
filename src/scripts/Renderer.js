@@ -20,6 +20,8 @@ export default class Renderer {
         this._camRotation = 0
         this._nearClipDist = 0.1
         this._farClipDist = 2000
+
+        this._Ka = 0.8
         this.updateCameraProjection()
     }
 
@@ -30,6 +32,14 @@ export default class Renderer {
     set projection(type) {
         this._projection = type
         this.updateCameraProjection()
+    }
+
+    get ka() {
+        return this._Ka
+    }
+
+    set ka(ka) {
+        this._Ka = ka
     }
     
     get orthoSize() {
@@ -195,7 +205,7 @@ export default class Renderer {
         webGl.enable(webGl.DEPTH_TEST);
 
         for (let obj of this.objectList) {
-            obj.draw(this._projectionMat, new Vector([0.5, 0.7, 1]).normalized.data, 0.6);
+            obj.draw(this._projectionMat, new Vector([0.5, 0.7, 1]).normalized.data, this._Ka);
         }
     }
 }

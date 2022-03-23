@@ -9,6 +9,7 @@ const resizeCanvas = (gl) => {
   gl.canvas.height = window.innerHeight
 }
 
+
 const canvas = document.querySelector('#glCanvas')
 const gl = canvas.getContext('webgl2')
 const renderer = new Renderer(gl)
@@ -27,6 +28,8 @@ const szSlider = document.getElementById('scale-sz')
 const txSlider = document.getElementById('translate-tx')
 const tySlider = document.getElementById('translate-ty')
 const tzSlider = document.getElementById('translate-tz')
+
+const ambientSlider = document.getElementById('amb-light')
 
 const projectionSelector = document.getElementById('projection-selector')
 
@@ -48,62 +51,6 @@ for (var i = 0; i < shadingRadio.length; i++) {
       glObject.shadeToggle = false
     }
   })
-}
-
-function get_cube_coordinates(){
-  let bblock = [
-      [0, 0, 0],
-      [0.1, 0.1, 0],
-      [0.1, 0.9, 0],
-      [0, 1, 0],
-
-      [0, 0, 0],
-      [0, 0.1, 0.1],
-      [0, 0.9, 0.1],
-      [0, 1, 0],
-
-      [0.1, 0.1, 0],
-      [0.1, 0.1, 0.1],
-      [0.1, 0.9, 0.1],
-      [0.1, 0.9, 0],
-
-      [0, 0.1, 0.1],
-      [0.1, 0.1, 0.1],
-      [0.1, 0.9, 0.1],
-      [0, 0.9, 0.1],
-  ];
-  let temp = JSON.parse(JSON.stringify(bblock))
-  for (let i=0;i<temp.length;i++){
-      temp[i][0] -= 2 * (temp[i][0] - 0.5)
-  }
-  bblock = bblock.concat(temp)
-
-  temp = JSON.parse(JSON.stringify(bblock))
-  for (let i=0;i<temp.length;i++){
-      temp[i][2] -= 2 * (temp[i][2] - 0.5)
-  }
-  bblock = bblock.concat(temp)
-
-  temp = JSON.parse(JSON.stringify(bblock))
-  for (let i=0;i<temp.length;i++){
-      temp[i][0] = temp[i][0] - 0.5
-      temp[i][1] = temp[i][1] - 0.5
-      let cur = temp[i][0]
-      temp[i][0] = -temp[i][1] + 0.5
-      temp[i][1] = cur + 0.5
-  }
-  let temp2 = JSON.parse(JSON.stringify(bblock));
-  for (let i=0;i<temp2.length;i++){
-      temp2[i][1] = temp2[i][1] - 0.5;
-      temp2[i][2] = temp2[i][2] - 0.5;
-      let cur = temp2[i][1];
-      temp2[i][1] = -temp2[i][2] + 0.5;
-      temp2[i][2] = cur + 0.5;
-  }
-  bblock = bblock.concat(temp);
-  bblock = bblock.concat(temp2);
-  
-  return bblock
 }
 
 let updateTransform = () => {
@@ -134,23 +81,21 @@ window.onload = function() {
     const renderer = new Renderer(gl)
     renderer.orthoSize = [2, 2, 200];
     renderer.camPosition = [0, 0, 0];
-  
-    let cube_coor = get_cube_coordinates()
-    let cube_topo = []
-    let cube_color = []
-    for (let i=0;i<cube_coor.length;i+=4){
-        let temp = []
-        for (let pl=0;pl<4;pl++){
-            temp.push(i + pl)
-        }
-        cube_topo.push(temp);
-        cube_color.push([1, 0, 0, 1])
-    }
 
-    glObject.setPoints(cube_coor)
-    glObject.setTopology(cube_topo, cube_color)
+    await fetch('./hollow-objs/hypercube.json').then(response => {
+      return response.json();
+    }).then(data => {
+        glObject.setPoints(data.coor)
 
-    glObject.generateNormalsFromTopology()
+        // glObject.setTopology(data.topo, data.color)
+        // glObject.generateNormalsFromTopology()
+
+        glObject.setNormalData(data.vn);
+        glObject.setTopology(data.topo, data.color, data.vn_idx);
+    }).catch(err => {
+      console.log(err)
+    });
+
 
     updateTransform()
     renderer.addObject(glObject);
@@ -174,6 +119,10 @@ window.onload = function() {
     sxSlider.oninput = updateTransform
     sySlider.oninput = updateTransform
     szSlider.oninput = updateTransform
+
+    ambientSlider.oninput = () => {
+      renderer._Ka = ambientSlider.value
+    }
 
     projectionSelector.onchange = function() {
       renderer.projection = parseInt(projectionSelector.value);
