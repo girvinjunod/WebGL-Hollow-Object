@@ -269,9 +269,14 @@ const loadFile = () => {
   reader.addEventListener('load', function() {
     var content = this.result
     var hollow = JSON.parse(content);
-    console.log(hollow)
     glObject.setPoints(hollow.coor);
-    glObject.setTopology(hollow.topo, hollow.color);
+    if (hollow.vn !== undefined) glObject.setNormalData(hollow.vn);
+    if (hollow.normBind === undefined) {
+      glObject.setTopology(hollow.topo, hollow.color);
+  } else {
+      glObject.setTopology(hollow.topo, hollow.color, hollow.normBind);
+  }
+    // glObject.setTopology(hollow.topo, hollow.color);
   });
   reader.readAsText(document.getElementById('load').files[0]);
 }
