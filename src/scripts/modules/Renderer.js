@@ -17,8 +17,6 @@ export default class Renderer {
         this._farClipDist = 2000
         this._camPosition = 2
         this._camRotation = 0
-        this._nearClipDist = 0.1
-        this._farClipDist = 2000
 
         this._Ka = 0.5
         this.updateCameraProjection()
