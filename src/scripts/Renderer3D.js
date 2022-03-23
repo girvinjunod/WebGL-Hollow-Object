@@ -127,10 +127,10 @@ export default class Renderer3D {
         }
 
         if (this._projection == Renderer3D.ORTHOGRAPHIC) {
-            let inverseX = 1 / this._orthoSize[0];
-            let inverseY = 1 / this._orthoSize[1];
-            let inverseZ = 1 / this._orthoSize[2];
-            let m = new Matrix(4, 4, [
+            var inverseX = 1 / this._orthoSize[0];
+            var inverseY = 1 / this._orthoSize[1];
+            var inverseZ = 1 / this._orthoSize[2];
+            var m = new Matrix(4, 4, [
                 2 * inverseX, 0, 0, 0,
                 0, 2 * inverseY, 0, 0,
                 0, 0, -2 * inverseZ, 0,
@@ -167,12 +167,12 @@ export default class Renderer3D {
                 0, 0, 0, 1
             ]);
 
-            let theta = 75.0;
-            let phi = 85.0;
-            let cottheta = 1 / Math.tan((theta / 180.0) * Math.PI);
-            let cotphi = 1 / Math.tan((phi / 180.0) * Math.PI);
+            var theta = 75.0;
+            var phi = 85.0;
+            var cottheta = 1 / Math.tan((theta / 180.0) * Math.PI);
+            var cotphi = 1 / Math.tan((phi / 180.0) * Math.PI);
 
-            let matrixT = new Matrix(4, 4, [
+            var matrixT = new Matrix(4, 4, [
                 1, 0, 0, 0,
                 0, 1, 0, 0,
                 -cottheta, -cotphi, 1, 0,
