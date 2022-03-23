@@ -22,7 +22,7 @@ export default class Renderer3D {
         this._orthoSize = [2, 2, 2]
         this._nearClipDist = 0.1
         this._farClipDist = 2000
-        this._fov = 70
+        this._fov = 180
         this._camPosition = 2
         this._camRotation = 0
         this.updateCameraProjection()
@@ -43,6 +43,7 @@ export default class Renderer3D {
 
     set fov(pos) {
         this._fov = pos
+        console.log(pos)
         this.updateCameraProjection()
     }
     
@@ -93,6 +94,7 @@ export default class Renderer3D {
 
 
     updateCameraProjection() {
+        console.log(this._fov)
         var viewMatrix = new Matrix();
         var webGl = this.webGl
         var cameraRotationMatrix = new Mat4x4(0,0,0,0,this._camRotation,0,1,1,1);
@@ -117,7 +119,7 @@ export default class Renderer3D {
             var farClip = this._farClipDist;
 
             var aspect = webGl.canvas.height / webGl.canvas.width;
-            var factor = Math.tan(Math.PI * 0.5 * (1 - fov / 180));
+            var factor = Math.tan(Math.PI * 0.5 - 0.5 * fov / 180 * Math.PI);
             var rangeInverse = 1.0 / (nearClip - farClip);
 
             var m = new Matrix(4, 4, [
