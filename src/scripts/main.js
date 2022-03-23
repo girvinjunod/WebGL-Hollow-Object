@@ -31,6 +31,9 @@ const txSlider = document.getElementById('translate-tx')
 const tySlider = document.getElementById('translate-ty')
 const tzSlider = document.getElementById('translate-tz')
 
+const projectionSelector = document.getElementById('projection-selector')
+const fov = document.getElementById('fov')
+
 const cameraRotate = document.getElementById('rotate-camera')
 const cameraRadius = document.getElementById('radius-camera')
 const cameraFOV = document.getElementById('camera-fov')
@@ -47,7 +50,6 @@ for (var i = 0; i < shadingRadio.length; i++) {
     }
   })
 }
-
 
 function get_cube_coordinates(){
   let bblock = [
@@ -130,7 +132,8 @@ window.onload = function() {
     gl.viewport(0,0, gl.canvas.width, gl.canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   
-    renderer.orthoSize = [2, 2, 2];
+    const renderer = new Renderer3D(gl)
+    renderer.orthoSize = [2, 2, 200];
     renderer.camPosition = [0, 0, 0];
   
     let cube_coor = get_cube_coordinates()
@@ -173,6 +176,14 @@ window.onload = function() {
     sySlider.oninput = updateTransform
     szSlider.oninput = updateTransform
 
+    projectionSelector.onchange = function() {
+      renderer.projection = parseInt(projectionSelector.value);
+      renderer.fov = parseInt(fov.value); 
+    }
+
+    fov.oninput = function (){
+      renderer.fov = parseInt(fov.value); 
+    }
     cameraRotate.oninput = function (){
       renderer.camRotation = parseInt(cameraRotate.value); 
     }

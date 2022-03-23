@@ -4,7 +4,9 @@ import Vector from './utils/vector';
 
 export default class Renderer3D {
     static ORTHOGRAPHIC = 0
-    // gl
+    static OBLIQUE = 1
+    static PERSPECTIVE = 2
+
     // objectList: Array<GL3DObject>
     // count: number
     
@@ -15,12 +17,15 @@ export default class Renderer3D {
     // _nearClipDist: number;
     // _farClipDist: number;
     
-    constructor(gl) {
-        this.gl = gl
+    constructor(webGl) {
+        this.webGl = webGl
         this.objectList = new Array()
         this.count = 0
         this._projection = 0
         this._orthoSize = [2, 2, 2]
+        this._nearClipDist = 0.1
+        this._farClipDist = 2000
+        this._fov = 180
         this._camPosition = 2
         this._camRotation = 0
         this._nearClipDist = 0.1
@@ -29,9 +34,25 @@ export default class Renderer3D {
         this.updateCameraProjection()
     }
 
+    get projection() {
+        return this._projection
+    }
 
+    set projection(type) {
+        this._projection = type
+        this.updateCameraProjection()
+    }
+    
+    get fov() {
+        return this._fov
+    }
 
-
+    set fov(pos) {
+        this._fov = pos
+        console.log(pos)
+        this.updateCameraProjection()
+    }
+    
     get orthoSize() {
         return this._orthoSize
     }
@@ -40,7 +61,25 @@ export default class Renderer3D {
         this._orthoSize = size
         this.updateCameraProjection()
     }
+    
+    get nearClipDist() {
+        return this._nearClipDist
+    }
 
+    set nearClipDist(dist) {
+        this._nearClipDist = dist
+        this.updateCameraProjection()
+    }
+
+    get farClipDist() {
+        return this._farClipDist
+    }
+
+    set farClipDist(dist) {
+        this._farClipDist = dist
+        this.updateCameraProjection()
+    }
+    
     get camPosition() {
         return this._camPosition
     }
@@ -86,18 +125,66 @@ export default class Renderer3D {
 
 
     updateCameraProjection() {
-      var cameraRotationMatrix = new Mat4x4(0,0,0,0,this._camRotation,0,1,1,1);
+        console.log(this._fov)
+        var viewMatrix = new Matrix();
+        var webGl = this.webGl
+        var cameraRotationMatrix = new Mat4x4(0,0,0,0,this._camRotation,0,1,1,1);
+        // cameraRotationMatrix.translate(0,0, this._camPosition);
+        viewMatrix = cameraRotationMatrix.matrix.inverse();
+
         if (this._projection == Renderer3D.ORTHOGRAPHIC) {
+            let inverseX = 1 / this._orthoSize[0];
+            let inverseY = 1 / this._orthoSize[1];
+            let inverseZ = 1 / this._orthoSize[2];
             let m = new Matrix(4, 4, [
-                2 / this._orthoSize[0], 0, 0, 0,
-                0, 2 / this._orthoSize[1], 0, 0,
-                0, 0, 2 / this._orthoSize[2], 0,
-                -2 * this._camPosition[0] / this._orthoSize[0], 
-                -2 * this._camPosition[1] / this._orthoSize[1], 
-                -2 * this._camPosition[2] / this._orthoSize[2], 
-                1,
+                2 * inverseX, 0, 0, 0,
+                0, 2 * inverseY, 0, 0,
+                0, 0, -2 * inverseZ, 0,
+                0, 0, 0, 1
             ])
-            this._projectionMat = m.mmult(cameraRotationMatrix.matrix)
+            this._projectionMat = viewMatrix.mmult(m);
+        }
+        else if (this._projection == Renderer3D.PERSPECTIVE) {
+            var fov = this._fov;
+            var nearClip = this._nearClipDist;
+            var farClip = this._farClipDist;
+
+            var aspect = webGl.canvas.height / webGl.canvas.width;
+            var factor = Math.tan(Math.PI * 0.5 - 0.5 * fov / 180 * Math.PI);
+            var rangeInverse = 1.0 / (nearClip - farClip);
+
+            var m = new Matrix(4, 4, [
+                factor * aspect, 0, 0, 0,
+                0, factor, 0, 0,
+                0, 0, (nearClip + farClip) * rangeInverse, -1,  
+                0, 0, nearClip * farClip * rangeInverse * 2, 0,
+            ]);
+            this._projectionMat = viewMatrix.mmult(m);
+        }
+        else if (this._projection == Renderer3D.OBLIQUE) {
+            var inverseX = 1 / this._orthoSize[0];
+            var inverseY = 1 / this._orthoSize[1];
+            var inverseZ = 1 / this._orthoSize[2];
+
+            var matrix = new Matrix(4, 4, [
+                2 * inverseX, 0, 0, 0,
+                0, 2 * inverseY, 0, 0,
+                0, 0, -2 * inverseZ, 0,
+                0, 0, 0, 1
+            ]);
+
+            let theta = 75.0;
+            let phi = 85.0;
+            let cottheta = 1 / Math.tan((theta / 180.0) * Math.PI);
+            let cotphi = 1 / Math.tan((phi / 180.0) * Math.PI);
+
+            let matrixT = new Matrix(4, 4, [
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                -cottheta, -cotphi, 1, 0,
+                0, 0, 0, 1
+            ]);
+            this._projectionMat = viewMatrix.mmult(matrixT.mmult(matrix));
         }
     }
 
@@ -116,10 +203,13 @@ export default class Renderer3D {
 
 
     render() {
-        let gl = this.gl;
-        gl.clearColor(1,1,1,1);
-        gl.clear(gl.COLOR_BUFFER_BIT);
-        gl.enable(gl.DEPTH_TEST);
+        var webGl = this.webGl
+
+        webGl.clearColor(1,1,1,1);
+        webGl.clear(webGl.COLOR_BUFFER_BIT);
+
+        webGl.enable(webGl.DEPTH_TEST);
+
         for (let obj of this.objectList) {
             obj.draw(this._projectionMat, new Vector([0.5, 0.7, 1]).normalized.data, 0.8);
         }
