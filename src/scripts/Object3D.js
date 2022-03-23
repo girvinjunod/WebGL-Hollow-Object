@@ -155,9 +155,9 @@ export default class GLObject3D {
 
         const a_normal = gl.getAttribLocation(this.shader, 'a_normal')
 
-        const u_matrix = gl.getUniformLocation(this.shader, 'u_transform')
+        const u_matrix = gl.getUniformLocation(this.shader, 'u_world')
 
-        const u_projection = gl.getUniformLocation(this.shader, 'u_projection')
+        const u_projection = gl.getUniformLocation(this.shader, 'u_worldProjection')
 
         const u_ambLight = gl.getUniformLocation(this.shader, 'u_ambLight')
         const u_revLightDir = gl.getUniformLocation(this.shader, 'u_revLightDir')

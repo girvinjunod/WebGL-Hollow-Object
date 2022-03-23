@@ -116,7 +116,7 @@ window.onload = function() {
 
   
   async function main() {
-    shaderProgram3D = await initShaderFiles(gl, 'vert3d.glsl', 'frag.glsl')
+    shaderProgram3D = await initShaderFiles(gl, 'vertexShader.glsl', 'fragmentShader.glsl')
     glObject = new GLObject3D(shaderProgram3D, gl);
     if (gl === null) {
       alert(
